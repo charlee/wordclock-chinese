@@ -20,7 +20,7 @@
 */
 
 
-const byte cw_minutes[60][4] = {
+const uint8_t cw_minutes[60][4] = {
 
   {99, 99, 99, 99},     // 00
   {16, 15, 13, 99},     // 01
@@ -103,7 +103,7 @@ const byte cw_minutes[60][4] = {
 
 */
 
-const byte cw_hours[24][5] = {
+const uint8_t cw_hours[24][5] = {
 
   {38, 37, 33, 31, 30},   // 00
   {38, 37, 32, 30, 99},   // 01
@@ -145,7 +145,7 @@ const byte cw_hours[24][5] = {
 
 */
 
-const byte cw_days[32][4] = {
+const uint8_t cw_days[32][4] = {
 
   {99, 99, 99, 99},       // -
   {53, 50, 99, 99},       //  1
@@ -195,7 +195,7 @@ const byte cw_days[32][4] = {
 四五十五六  分七八九分    0 ->  9
 
 */
-const byte cw_months[13][3] = {
+const uint8_t cw_months[13][3] = {
   {99, 99, 99},       // -
   {61, 64, 99},       //  1
   {62, 64, 99},       //  2
@@ -239,4 +239,44 @@ TimeLEDs getLEDsByEpoch(unsigned long epoch, int offset) {
   }
   
   return leds;
+}
+
+
+int getLEDsByEpoch(unsigned long epoch, int offset, uint8_t* led_pos) {
+
+  int i, count;
+  int t;
+
+  epoch += offset;
+
+  t = month(epoch);
+  count = 0;
+  for (i = 0; i < 3; i++) {
+    if (cw_months[t][i] == 99) break;
+    led_pos[count] = cw_months[t][i];
+    count++;
+  }
+
+  t = day(epoch);
+  for (i = 0; i < 4; i++) {
+    if (cw_days[t][i] == 99) break;
+    led_pos[count] = cw_days[t][i];
+    count++;
+  }
+
+  t = hour(epoch);
+  for (i = 0; i < 5; i++) {
+    if (cw_hours[t][i] == 99) break;
+    led_pos[count] = cw_hours[t][i];
+    count++;
+  }
+
+  t = minute(epoch);
+  for (i = 0; i < 4; i++) {
+    if (cw_minutes[t][i] == 99) break;
+    led_pos[count] = cw_minutes[t][i];
+    count++;
+  }
+
+  return count;
 }

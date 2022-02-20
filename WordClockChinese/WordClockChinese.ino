@@ -8,7 +8,6 @@
 #include "ESP8266AutoConfig.h"
 #include "ChineseWordMatrix.h"
 
-
 #define RECONFIG_PIN 2
 
 #define NUM_LEDS 70
@@ -18,6 +17,8 @@ WiFiUDP ntpUDP;
 NTPClient ntpClient(ntpUDP, "ca.pool.ntp.org", 0, 3600 * 1000);
 
 CRGB leds[NUM_LEDS];
+uint8_t led_pos[16];
+int count;
 
 void setup() {
 
@@ -48,6 +49,22 @@ void setup() {
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
 }
 
+
+void fill_leds(const CHSV& start, const CHSV& end) {
+  CHSV hsv = start;
+  uint8_t dh = (end.h - start.h) / (count - 1);
+  uint8_t ds = (end.s - start.s) / (count - 1);
+  uint8_t dv = (end.v - start.v) / (count - 1);
+
+  for (int i = 0; i < count; i++) {
+    leds[led_pos[i]] = hsv;
+    hsv.h += dh;
+    hsv.s += ds;
+    hsv.v += dv;
+  }
+}
+
+
 // the loop function runs over and over again forever
 void loop() {
   ESP8266AutoConfig.poll();
@@ -56,33 +73,41 @@ void loop() {
   int i;
 
   unsigned long epoch = ntpClient.getEpochTime();
-  // Serial.println(epoch);
+  Serial.println(epoch);
   
-  TimeLEDs tm_leds = getLEDsByEpoch(epoch, -5 * 3600);
+  count = getLEDsByEpoch(epoch, -5 * 3600, &(led_pos[0]));
 
+  Serial.println(led_pos[0]);
+  Serial.println(count);
+
+  // clear all
   fill_solid(&(leds[0]), NUM_LEDS, CRGB::Black);
 
-  for (i = 0; i < 3; i++) {
-    if (tm_leds.month[i] == 99) break;
-    leds[tm_leds.month[i]] = CRGB::Red;
-  }
+  Serial.println("cleared");
 
-  for (i = 0; i < 4; i++) {
-    if (tm_leds.day[i] == 99) break;
-    leds[tm_leds.day[i]] = CRGB::Green;
-  }
+  fill_leds(CHSV(224, 187, 255), CHSV(0, 187, 255));
 
-  for (i = 0; i < 5; i++) {
-    if (tm_leds.hour[i] == 99) break;
-    leds[tm_leds.hour[i]] = CRGB::Blue;
-  }
+  Serial.println("filled");
 
-  for (i = 0; i < 4; i++) {
-    if (tm_leds.minute[i] == 99) break;
-    leds[tm_leds.minute[i]] = CRGB::Yellow;
-  }
+  // for (i = 0; i < 3; i++) {
+  //   if (tm_leds.month[i] == 99) break;
+  //   leds[tm_leds.month[i]] = CRGB::Red;
+  // }
 
-  Serial.printf("r, g, b = %d, %d, %d\n", leds[0].r, leds[0].g, leds[0].b);
+  // for (i = 0; i < 4; i++) {
+  //   if (tm_leds.day[i] == 99) break;
+  //   leds[tm_leds.day[i]] = CRGB::Green;
+  // }
+
+  // for (i = 0; i < 5; i++) {
+  //   if (tm_leds.hour[i] == 99) break;
+  //   leds[tm_leds.hour[i]] = CRGB::Blue;
+  // }
+
+  // for (i = 0; i < 4; i++) {
+  //   if (tm_leds.minute[i] == 99) break;
+  //   leds[tm_leds.minute[i]] = CRGB::Yellow;
+  // }
 
   FastLED.show();
 
