@@ -9,7 +9,6 @@ typedef struct time_leds {
 } TimeLEDs;
 
 
-TimeLEDs getLEDsByEpoch(unsigned long epoch, int offset);
-int getLEDsByEpoch(unsigned long epoch, int offset, uint8_t* leds);
+int getLEDsByEpoch(unsigned long epoch, uint8_t* leds);
 
 #endif

@@ -211,43 +211,12 @@ const uint8_t cw_months[13][3] = {
   {60, 62, 64},       // 11
 };
 
-TimeLEDs getLEDsByEpoch(unsigned long epoch, int offset) {
-  TimeLEDs leds;
-  int i;
-  int t;
+/**
+ * epoch is with offset
+ */
+int getLEDsByEpoch(unsigned long epoch, uint8_t* led_pos) {
 
-  epoch += offset;
-
-  t = month(epoch);
-  for (i = 0; i < 3; i++) {
-    leds.month[i] = cw_months[t][i];
-  }
-
-  t = day(epoch);
-  for (i = 0; i < 4; i++) {
-    leds.day[i] = cw_days[t][i];
-  }
-
-  t = hour(epoch);
-  for (i = 0; i < 5; i++) {
-    leds.hour[i] = cw_hours[t][i];
-  }
-
-  t = minute(epoch);
-  for (i = 0; i < 4; i++) {
-    leds.minute[i] = cw_minutes[t][i];
-  }
-  
-  return leds;
-}
-
-
-int getLEDsByEpoch(unsigned long epoch, int offset, uint8_t* led_pos) {
-
-  int i, count;
-  int t;
-
-  epoch += offset;
+  int i, count, t;
 
   t = month(epoch);
   count = 0;
@@ -280,3 +249,4 @@ int getLEDsByEpoch(unsigned long epoch, int offset, uint8_t* led_pos) {
 
   return count;
 }
+
