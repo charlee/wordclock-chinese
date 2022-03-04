@@ -67,6 +67,9 @@ public:
   int getCount();
 
   CHSV getColor(int pos, int decisec);
+
+private:
+  void dump(unsigned long epoch);
 };
 
 #endif

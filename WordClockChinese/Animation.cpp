@@ -6,6 +6,8 @@
 #include "config.h"
 
 
+#define DEBUG 0
+
 Gradient::Gradient(int count, int stockId) {
   m_startColor = m_stockGradients[stockId][0];
   m_endColor = m_stockGradients[stockId][1];
@@ -42,7 +44,7 @@ void Animation::createAnimation(unsigned long epoch) {
 
   if (sec == 0) {
     // switch time display animation
-    unsigned long oldEpoch = epoch - 2000;
+    unsigned long oldEpoch = epoch - 1;
     count = getLEDsByEpoch(oldEpoch, &(led_pos[0]));
 
     pGradient = new Gradient(count, hour(oldEpoch));
@@ -55,6 +57,9 @@ void Animation::createAnimation(unsigned long epoch) {
     delete pGradient;
 
     count = getLEDsByEpoch(epoch, &(led_pos[0]));
+
+    pGradient = new Gradient(count, hour(epoch));
+
     for (i = 0; i < count; i++) {
       pGradient->getColor(i, m_toColors[led_pos[i]]);
       m_animationTypes[led_pos[i]] = ANIMATION_FADE;
@@ -77,6 +82,7 @@ void Animation::createAnimation(unsigned long epoch) {
     delete pGradient;
   }
 
+  dump(epoch);
 }
 
 
@@ -87,11 +93,36 @@ CHSV Animation::getColor(int pos, int decisec) {
     return CHSV(m_fromColors[pos].h, m_fromColors[pos].s, m_fromColors[pos].v * ratio / 10);
   } else if (m_animationTypes[pos] == ANIMATION_FADE) {
     return CHSV(
-      m_fromColors[pos].h * (10 - decisec) + m_toColors[pos].h * decisec,
-      m_fromColors[pos].s * (10 - decisec) + m_toColors[pos].s * decisec,
-      m_fromColors[pos].v * (10 - decisec) + m_toColors[pos].v * decisec
+      (m_fromColors[pos].h * (10 - decisec) + m_toColors[pos].h * decisec) / 10,
+      (m_fromColors[pos].s * (10 - decisec) + m_toColors[pos].s * decisec) / 10,
+      (m_fromColors[pos].v * (10 - decisec) + m_toColors[pos].v * decisec) / 10
     );
   } else {
     return m_fromColors[pos];
   }
+}
+
+void Animation::dump(unsigned long epoch) {
+#if DEBUG
+  Serial.printf("========== %02d:%02d:%02d ==============\n", hour(epoch), minute(epoch), second(epoch));
+  for (int i = 0; i < NUM_LEDS; i++) {
+    if (m_animationTypes[i] == ANIMATION_STATIC) {
+      if (m_fromColors[i].h != 0 || m_fromColors[i].s != 0 || m_fromColors[i] != 0) {
+        Serial.printf("[%d] static (%d, %d, %d)\n", i, m_fromColors[i].h, m_fromColors[i].s, m_fromColors[i].v);
+      }
+    } else if (m_animationTypes[i] == ANIMATION_BLINK) {
+      if (m_fromColors[i].h != 0 || m_fromColors[i].s != 0 || m_fromColors[i] != 0) {
+        Serial.printf("[%d] blink (%d, %d, %d)\n", i, m_fromColors[i].h, m_fromColors[i].s, m_fromColors[i].v);
+      }
+    } else {
+      // FADE
+      if (
+        m_fromColors[i].h != 0 || m_fromColors[i].s != 0 || m_fromColors[i] != 0 ||
+        m_toColors[i].h != 0 || m_toColors[i].s != 0 || m_toColors[i] != 0) {
+        Serial.printf("[%d] fade (%d, %d, %d) -> (%d, %d, %d)\n", i, m_fromColors[i].h, m_fromColors[i].s, m_fromColors[i].v, m_toColors[i].h, m_toColors[i].s, m_toColors[i].v);
+      }
+    }
+  }
+  Serial.printf("----------------------------------\n");
+#endif
 }

@@ -68,7 +68,7 @@ void loop() {
   epoch = ntpClient.getEpochTime();
   
   // update prev data only when decisec == 0
-  if (epoch != prev_epoch && decisec == 0) {
+  if (epoch != prev_epoch || decisec >= 10) {
     prev_epoch = epoch;
     decisec = 0;
     animation.createAnimation(epoch);
