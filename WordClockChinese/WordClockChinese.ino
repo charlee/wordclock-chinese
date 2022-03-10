@@ -20,7 +20,7 @@
 WiFiUDP ntpUDP;
 NTPClient ntpClient(ntpUDP, NTP_SERVER, 0, 3600 * 1000);
 
-CRGB leds[NUM_LEDS];
+CRGB leds[NUM_LEDS + NUM_SACRIFICE_LED];
 Animation animation;
 
 unsigned long epoch;
@@ -64,7 +64,7 @@ void setup() {
   // setup LEDs
   FastLED.setMaxPowerInVoltsAndMilliamps(5, 400);
   FastLED.setBrightness(64);
-  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
+  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS + NUM_SACRIFICE_LED);
   Serial.printf("LEDs setup done.\n");
 }
 
@@ -104,7 +104,7 @@ void loop() {
   }
 
   for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = animation.getColor(i, decisec);
+    leds[i + NUM_SACRIFICE_LED] = animation.getColor(i, decisec);
   }
 
   FastLED.show();
