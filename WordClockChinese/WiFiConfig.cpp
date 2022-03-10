@@ -14,6 +14,8 @@ void WiFiConfigClass::computeChecksum() {
     sum += config.passphrase[i];
   }
 
+  sum += (uint8_t)config.timezone;
+
   config.checksum = -sum;
 }
 
@@ -30,6 +32,7 @@ void WiFiConfigClass::validateChecksum() {
   if (!m_isValid) {
     config.ssid[0] = 0;
     config.passphrase[0] = 0;
+    config.timezone = 0;
   }
 }
 
@@ -48,13 +51,22 @@ char* WiFiConfigClass::passphrase() {
   return config.passphrase;
 }
 
+int8_t WiFiConfigClass::timezone() {
+  return config.timezone;
+}
+
 void WiFiConfigClass::setSsid(const char* ssid) {
   strncpy(config.ssid, ssid, SSID_SIZE);
 }
 
 void WiFiConfigClass::setPassphrase(const char* passphrase) {
   strncpy(config.passphrase, passphrase, PASSPHRASE_SIZE);
- }
+}
+
+void WiFiConfigClass::setTimezone(const int8_t timezone) {
+  config.timezone = timezone;
+}
+
 
 void WiFiConfigClass::commit() {
   EEPROMConfig<WiFiConfigData> writer;

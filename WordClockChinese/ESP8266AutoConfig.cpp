@@ -8,6 +8,7 @@ const char * form = "\
 <form action='/connect' method='POST'>\
   <div>SSID: <input type='text' name='ssid' maxlength='" XSTR(SSID_SIZE) "'></div>\
   <div>Passphase: <input type='text' name='passphrase' maxlength='" XSTR(PASSPHRASE_SIZE) "'></div>\
+  <div>Timezone: <input type='text' name='timezone' maxlength='" XSTR(TIMEZONE_SIZE) "'></div>\
   <div><button type='submit'>Connect</button></div>\
 <form>\
 ";
@@ -29,6 +30,8 @@ void ESP8266AutoConfigClass::handleConnect() {
         WiFiConfig.setSsid(m_server->arg(i).c_str());
       } else if (argName.equals("passphrase")) {
         WiFiConfig.setPassphrase(m_server->arg(i).c_str());
+      } else if (argName.equals("timezone")) {
+        WiFiConfig.setTimezone((char)m_server->arg(i).toInt());
       }
     }
 

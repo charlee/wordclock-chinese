@@ -25,15 +25,18 @@
 #ifndef __WIFI_CONFIG_H__
 #define __WIFI_CONFIG_H__
 
+#include <stdint.h>
+
 // ssid size and passphase size. Null terminator excluded.
 #define SSID_SIZE 15
 #define PASSPHRASE_SIZE 15
-
+#define TIMEZONE_SIZE 3
 
 typedef struct {
   // +1 to include the null terminator.
   char ssid[SSID_SIZE + 1];
   char passphrase[PASSPHRASE_SIZE + 1];
+  int8_t timezone;
   
   // checksum for all bytes excluding the checksum itself.
   // When validating, the sum of all bytes (including checksum byte) should be 0.
@@ -60,11 +63,17 @@ public:
   // Return the passphrase as a C string.
   char* passphrase();
 
+  // Return the timezone offset in hours.
+  int8_t timezone();
+
   // Set the SSID before commiting.
   void setSsid(const char* ssid);
 
   // Set the passphrase before commiting.
   void setPassphrase(const char* passphrase);
+
+  // Set timezone. `timezone` is the offset from UTC in hours.
+  void setTimezone(const int8_t timezone);
 
   // Commit the SSID and passphrase to EEPROM.
   void commit();

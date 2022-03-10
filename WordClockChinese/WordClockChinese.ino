@@ -6,6 +6,7 @@
 #include <FastLED.h>
 
 #include "config.h"
+#include "WiFiConfig.h"
 #include "ESP8266AutoConfig.h"
 #include "ChineseWordMatrix.h"
 #include "Animation.h"
@@ -52,6 +53,8 @@ void setup() {
     if (connected) {
 
       // start NTP client
+      Serial.printf("WiFi connected, init NTP client with timezone %d\n", WiFiConfig.timezone());
+      ntpClient.setTimeOffset(WiFiConfig.timezone() * 3600);
       ntpClient.begin();
 
     }
