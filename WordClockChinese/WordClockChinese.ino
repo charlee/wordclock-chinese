@@ -11,14 +11,14 @@
 #include "ChineseWordMatrix.h"
 #include "Animation.h"
 
-#define RECONFIG_PIN 2
+#define RECONFIG_PIN 5
 
 #define DATA_PIN 4
 
 #define COLOR_TEST 0
 
 WiFiUDP ntpUDP;
-NTPClient ntpClient(ntpUDP, "ca.pool.ntp.org", 0, 3600 * 1000);
+NTPClient ntpClient(ntpUDP, NTP_SERVER, 0, 3600 * 1000);
 
 CRGB leds[NUM_LEDS];
 Animation animation;
@@ -65,6 +65,7 @@ void setup() {
   FastLED.setMaxPowerInVoltsAndMilliamps(5, 400);
   FastLED.setBrightness(64);
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
+  Serial.printf("LEDs setup done.\n");
 }
 
 int c = 0;

@@ -30,7 +30,7 @@
 // ssid size and passphase size. Null terminator excluded.
 #define SSID_SIZE 15
 #define PASSPHRASE_SIZE 15
-#define TIMEZONE_SIZE 3
+#define TIMEZONE_SIZE 1
 
 typedef struct {
   // +1 to include the null terminator.

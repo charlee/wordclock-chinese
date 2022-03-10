@@ -1,5 +1,6 @@
 #include "ESP8266AutoConfig.h"
 #include "WiFiConfig.h"
+#include <stdint.h>
 
 #define XSTR(s) STR(s)
 #define STR(s) #s
@@ -8,7 +9,7 @@ const char * form = "\
 <form action='/connect' method='POST'>\
   <div>SSID: <input type='text' name='ssid' maxlength='" XSTR(SSID_SIZE) "'></div>\
   <div>Passphase: <input type='text' name='passphrase' maxlength='" XSTR(PASSPHRASE_SIZE) "'></div>\
-  <div>Timezone: <input type='text' name='timezone' maxlength='" XSTR(TIMEZONE_SIZE) "'></div>\
+  <div>Timezone: <input type='text' name='timezone' maxlength='3'></div>\
   <div><button type='submit'>Connect</button></div>\
 <form>\
 ";
@@ -24,19 +25,19 @@ void ESP8266AutoConfigClass::handleConnect() {
   if (m_server->method() != HTTP_POST) {
     m_server->send(405, "text/plain", "Method Not Allowed");
   } else {
-    for (uint8_t i = 0; i < m_server->args(); i++) {
+    for (int i = 0; i < m_server->args(); i++) {
       argName = m_server->argName(i);
       if (argName.equals("ssid")) {
         WiFiConfig.setSsid(m_server->arg(i).c_str());
       } else if (argName.equals("passphrase")) {
         WiFiConfig.setPassphrase(m_server->arg(i).c_str());
       } else if (argName.equals("timezone")) {
-        WiFiConfig.setTimezone((char)m_server->arg(i).toInt());
+        WiFiConfig.setTimezone((int8_t)m_server->arg(i).toInt());
       }
     }
 
     if (strlen(WiFiConfig.ssid()) > 0) {
-      Serial.printf("SSID=%s saved.\n", WiFiConfig.ssid());
+      Serial.printf("SSID=%s, passphrase=%s, timezone=%d saved.\n", WiFiConfig.ssid(), WiFiConfig.passphrase(), WiFiConfig.timezone());
       WiFiConfig.commit();
 
       m_server->send(200, "text/plain", "SSID and Passphrase saved.");
@@ -58,7 +59,7 @@ void ESP8266AutoConfigClass::poll() {
 
 void ESP8266AutoConfigClass::startWebServer() {
   m_server = new ESP8266WebServer(80);
-  Serial.print("Starting web m_server for AP mode...");
+  Serial.print("Starting web server for AP mode...");
   m_server->on("/", std::bind(&ESP8266AutoConfigClass::handleRoot, this));
   m_server->on("/connect", std::bind(&ESP8266AutoConfigClass::handleConnect, this));
   m_server->begin();
@@ -76,7 +77,7 @@ void ESP8266AutoConfigClass::stopWebServer() {
 bool ESP8266AutoConfigClass::startAp(bool autoMode) {
   Serial.print("Starting AP mode...");
 
-  bool result = WiFi.softAP("ESP8266", "");
+  bool result = WiFi.softAP("Chinese Word Clock", "");
 
   if (result) {
     Serial.println("ready");

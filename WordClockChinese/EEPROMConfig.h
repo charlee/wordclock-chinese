@@ -47,6 +47,7 @@ void EEPROMConfig<T>::read(T* config) {
 
 template <class T>
 void EEPROMConfig<T>::write(T config) {
+  EEPROM.begin(sizeof(T));
   char* p = (char*)&config;
   for (size_t i = 0; i < sizeof(T); i++) {
     EEPROM.write(i, (uint8_t)*p);

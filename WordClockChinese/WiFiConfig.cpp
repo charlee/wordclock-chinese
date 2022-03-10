@@ -1,20 +1,20 @@
 #include "WiFiConfig.h"
 #include "EEPROMConfig.h"
+#include <Arduino.h>
 #include <string.h>
 
 
 void WiFiConfigClass::computeChecksum() {
   size_t i;
   uint8_t sum = 0;
-  for (i = 0; i < SSID_SIZE; i++) {
-    sum += config.ssid[i];
-  }
 
-  for (i = 0; i < PASSPHRASE_SIZE; i++) {
-    sum += config.passphrase[i];
-  }
+  Serial.printf("Computing EEPROM checksum..");
+  for (i = 0; i < sizeof(WiFiConfigData) - 1; i++) {
+    sum += *((uint8_t*)&config + i);
+    Serial.printf("%x ", *((uint8_t*)&config + i));
+  };
 
-  sum += (uint8_t)config.timezone;
+  Serial.printf("sum = %x\n", sum);
 
   config.checksum = -sum;
 }
@@ -23,9 +23,13 @@ void WiFiConfigClass::validateChecksum() {
 
   size_t i;
   uint8_t sum = 0;
+
+  Serial.printf("Validating EEPROM..");
   for (i = 0; i < sizeof(WiFiConfigData); i++) {
     sum += *((uint8_t*)&config + i);
+    Serial.printf("%x ", *((uint8_t*)&config + i));
   }
+  Serial.printf("\n");
 
   m_isValid = (sum == 0);
 
