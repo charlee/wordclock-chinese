@@ -63,7 +63,7 @@ void setup() {
 
   // setup LEDs
   FastLED.setMaxPowerInVoltsAndMilliamps(5, 400);
-  FastLED.setBrightness(64);
+  FastLED.setBrightness(200);
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS + NUM_SACRIFICE_LED);
   Serial.printf("LEDs setup done.\n");
 }
