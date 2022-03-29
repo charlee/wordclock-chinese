@@ -3,6 +3,8 @@ Chinese Word Clock
 
 [中文版](#汉字文字钟)
 
+![Chinese Word Clock](images/wordclock-chinese.jpg)
+
 Inspired by the famous [Word Clock](https://www.instructables.com/Wordclock/),
 this project created a word clock that consists of Chinese characters.
 Driven by an ESP8266, this clock synchronize time from NTP servers automatically.
@@ -28,6 +30,13 @@ Also note that 1.2A goes way beyond the 500mA limit that computer USB ports coul
 When debugging / developing programs on the computer, make sure to use a small brightness.
 
 
+### Frame and Case
+
+The frame is an [IDEA RIBBA 13cm x 18cm Picture Frame](https://www.ikea.com/ca/en/p/ribba-frame-white-70378414).
+This frame is inexpensive, and is thick enough to hide electronic components inside. It is a good choice for similar electronic projects.
+
+In the [STL](STL/) folder I provided the STL files used in these project.
+
 
 ## Development
 
@@ -36,7 +45,7 @@ The program is written with Arduino.
 The whole program consists of the following parts:
 
 - `ChineseWordMatrix.*`: convert timestamps to LED indicies.
-- `EEPROMConfig。*`, `ESP8266AutoConfig.*`, `WiFiConfig.*`: provides the WiFi management functionality.
+- `EEPROMConfig.*`, `ESP8266AutoConfig.*`, `WiFiConfig.*`: provides the WiFi management functionality.
 - `Animation.*`: implements the fade in/fade out/breathing animations.
 
 
@@ -64,6 +73,12 @@ ESP8266会产生大约170mA的电流。
 
 另外，1.2A已远远超过了电脑的USB接口能提供的500mA限制。因此在开发或调试时，务必将brightness设为一个较小的值。
 
+### 框体和外壳
+
+框体采用的是[宜家的RIBBA 15cm x 18cm 相框](https://www.ikea.com/ca/en/p/ribba-frame-white-70378414).
+这款相框非常便宜，而且足够厚，内部可以容纳许多电子元件，非常适合类似的项目。
+
+[STL](STL/)文件夹下提供了本项目用到的STL文件。
 
 ## 开发
 
@@ -72,6 +87,20 @@ ESP8266会产生大约170mA的电流。
 整个程序由以下模块组成：
 
 - `ChineseWordMatrix.*`：负责将时间戳转换成LED的序号。
-- `EEPROMConfig。*`, `ESP8266AutoConfig.*`, `WiFiConfig.*`：负责WiFi管理和配置。
+- `EEPROMConfig.*`, `ESP8266AutoConfig.*`, `WiFiConfig.*`：负责WiFi管理和配置。
 - `Animation.*`：用于产生渐入/渐出和呼吸效果的动画。
 
+
+
+## License
+
+Shield: [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
+
+This work is licensed under a
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
+
+[![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
+
+[cc-by-nc-sa]: http://creativecommons.org/licenses/by-nc-sa/4.0/
+[cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
+[cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
